@@ -3,11 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail, ShoppingBag, Sparkles } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  ShoppingBag,
+  Sparkles,
+} from "lucide-react";
 import { cn } from "cn";
+import Link from "next/link";
 
 import { useLogin } from "@/hook";
-import { loginSchema } from "@/validation";
+
 import { Button } from "@/components/ui/button";
 import {
   Field,
@@ -18,6 +27,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "../ui/toast";
+import { UserValidation } from "@/validation";
 
 export function LoginForm({
   className,
@@ -29,11 +39,11 @@ export function LoginForm({
 
   const form = useForm({
     defaultValues: {
-      email: "user1@gmail.com",
-      password: "SecurePassword123!",
+      email: "",
+      password: "",
     },
     validators: {
-      onSubmit: loginSchema,
+      onSubmit: UserValidation.LoginZodSchema,
     },
     onSubmit: ({ value }) => {
       login(value, {
@@ -48,7 +58,8 @@ export function LoginForm({
         onError: (err) => {
           toast.add({
             title: "Unable to sign in",
-            description: err.message || "Please check your details and try again.",
+            description:
+              err.message || "Please check your details and try again.",
             type: "error",
           });
         },
@@ -78,20 +89,22 @@ export function LoginForm({
           <span className="flex size-11 items-center justify-center rounded-2xl bg-white/15">
             <ShoppingBag aria-hidden="true" className="size-5" />
           </span>
-          <span className="text-lg font-semibold tracking-tight">Your Store</span>
+          <span className="text-lg font-semibold tracking-tight">
+            Your Store
+          </span>
         </div>
 
         <div className="relative max-w-sm">
           <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium">
-            <Sparkles aria-hidden="true" className="size-3.5" />
-            A better way to shop
+            <Sparkles aria-hidden="true" className="size-3.5" />A better way to
+            shop
           </span>
           <h1 className="text-4xl font-semibold leading-tight tracking-tight lg:text-5xl">
             Good to see you again.
           </h1>
           <p className="mt-4 text-sm leading-6 text-primary-foreground/80">
-            Sign in to pick up where you left off, keep track of your orders, and
-            get back to the things you love.
+            Sign in to pick up where you left off, keep track of your orders,
+            and get back to the things you love.
           </p>
         </div>
 
@@ -110,7 +123,9 @@ export function LoginForm({
           </div>
 
           <header className="mb-8">
-            <p className="mb-2 text-sm font-medium text-primary">Welcome back</p>
+            <p className="mb-2 text-sm font-medium text-primary">
+              Welcome back
+            </p>
             <h2 className="text-3xl font-semibold tracking-tight">
               Sign in to your account
             </h2>
@@ -133,7 +148,9 @@ export function LoginForm({
 
                   return (
                     <Field data-invalid={isInvalid}>
-                      <FieldLabel htmlFor={field.name}>Email address</FieldLabel>
+                      <FieldLabel htmlFor={field.name}>
+                        Email address
+                      </FieldLabel>
                       <div className="relative">
                         <Mail
                           aria-hidden="true"
@@ -150,11 +167,15 @@ export function LoginForm({
                           aria-invalid={isInvalid}
                           className="h-12 rounded-xl pl-10 text-sm"
                           value={field.state.value}
-                          onChange={(event) => field.handleChange(event.target.value)}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
                           onBlur={field.handleBlur}
                         />
                       </div>
-                      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
                     </Field>
                   );
                 }}
@@ -187,7 +208,9 @@ export function LoginForm({
                           aria-invalid={isInvalid}
                           className="h-12 rounded-xl pl-10 pr-12 text-sm"
                           value={field.state.value}
-                          onChange={(event) => field.handleChange(event.target.value)}
+                          onChange={(event) =>
+                            field.handleChange(event.target.value)
+                          }
                           onBlur={field.handleBlur}
                         />
                         <button
@@ -196,7 +219,9 @@ export function LoginForm({
                             setIsPasswordVisible((visible) => !visible)
                           }
                           aria-label={
-                            isPasswordVisible ? "Hide password" : "Show password"
+                            isPasswordVisible
+                              ? "Hide password"
+                              : "Show password"
                           }
                           aria-pressed={isPasswordVisible}
                           className="absolute inset-y-0 right-1 flex size-10 items-center justify-center self-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -208,7 +233,9 @@ export function LoginForm({
                           )}
                         </button>
                       </div>
-                      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+                      {isInvalid && (
+                        <FieldError errors={field.state.meta.errors} />
+                      )}
                     </Field>
                   );
                 }}
@@ -237,7 +264,13 @@ export function LoginForm({
                 </Button>
 
                 <FieldDescription className="text-center leading-5">
-                  Your account keeps your orders and shopping details together.
+                  Don&apos;t have an account?{" "}
+                  <Link
+                    href="/register"
+                    className="font-medium text-primary underline-offset-4 hover:underline"
+                  >
+                    Sign up
+                  </Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
