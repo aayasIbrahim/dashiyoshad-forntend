@@ -5,7 +5,7 @@ import { ReactNode, useEffect } from "react";
 import AuthLoading from "./auth-loading";
 import AccessDenied from "./access-denied";
 ;
-import { useGetMe } from "@/hook";
+import { useGetMe } from "@/hooks";
 import { UserRole } from "@/types";
 
 interface IProps {

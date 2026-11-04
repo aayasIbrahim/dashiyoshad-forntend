@@ -15,7 +15,7 @@ import {
 import { cn } from "cn";
 import Link from "next/link";
 
-import { useLogin } from "@/hook";
+import { useLogin } from "@/hooks";
 
 import { Button } from "@/components/ui/button";
 import {

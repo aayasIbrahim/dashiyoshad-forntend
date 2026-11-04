@@ -16,7 +16,7 @@ import {
 import Link from "next/link";
 import { cn } from "cn";
 
-import { useRegistration } from "@/hook";
+import { useRegistration } from "@/hooks";
 import { UserValidation } from "@/validation";
 import { Button } from "@/components/ui/button";
 import {
