@@ -39,8 +39,8 @@ export function LoginForm({
 
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "user1@gmail.com",
+      password: "SecurePassword123!",
     },
     validators: {
       onSubmit: UserValidation.LoginZodSchema,
