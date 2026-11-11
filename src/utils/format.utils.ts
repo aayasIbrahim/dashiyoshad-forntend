@@ -38,3 +38,10 @@ export function formatDateTime(value: string | Date) {
 export function formatCurrency(value: string | number) {
   return currencyFormatter.format(Number(value));
 }
+export function formatPaymentMethod(method: string) {
+  return method
+    .toLowerCase()
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}

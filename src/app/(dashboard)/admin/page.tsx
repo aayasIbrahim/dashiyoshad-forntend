@@ -25,16 +25,10 @@ import {
   formatDate,
   formatDateTime,
   formatOrderStatus,
+  formatPaymentMethod,
   orderStatusBadgeColors,
 } from "@/utils";
 
-function formatPaymentMethod(method: string) {
-  return method
-    .toLowerCase()
-    .split("_")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
-}
 
 
 export default function AdminDashboard() {
