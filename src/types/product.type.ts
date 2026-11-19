@@ -8,6 +8,7 @@ export interface ICreateProductInput {
     stock?: number;
     weight?: string | null;
     categoryId: string;
+    productImages?: File[];
 }
 
 export interface IUpdateProductInput {
@@ -29,6 +30,7 @@ export interface IProduct {
     stock: number;
     weight: string | null;
     categoryId: string;
+    images?: string[];
     createdAt?: string;
     updatedAt?: string;
 }

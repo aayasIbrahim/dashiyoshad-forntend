@@ -19,9 +19,20 @@ export function getProducts(params: IListProductsQuery = {}) {
 export const listProducts = getProducts;
 
 export function createProduct(payload: ICreateProductInput) {
+  const body = new FormData();
+  body.set("name", payload.name);
+  body.set("price", String(payload.price));
+  body.set("sku", payload.sku);
+  body.set("categoryId", payload.categoryId);
+
+  if (payload.description) body.set("description", payload.description);
+  if (payload.stock !== undefined) body.set("stock", String(payload.stock));
+  if (payload.weight) body.set("weight", payload.weight);
+  payload.productImages?.forEach((image) => body.append("productImages", image));
+
   return apiClient<ProductSingleResponse>("/products", {
     method: "POST",
-    body: payload,
+    body,
   });
 }
 

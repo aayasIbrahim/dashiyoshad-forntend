@@ -35,6 +35,16 @@ const UpdateProductZodSchema = z.object({
 	categoryId: productFields.categoryId.optional(),
 });
 
+const ProductFormZodSchema = z.object({
+	name: productFields.name,
+	description: z.string().trim().max(5000),
+	price: z.number().finite().min(0),
+	sku: productFields.sku,
+	stock: z.number().int().min(0),
+	weight: z.string().trim().max(100),
+	categoryId: productFields.categoryId,
+});
+
 const ProductIdZodSchema = z.object({
 	id: z.uuid(),
 });
@@ -65,6 +75,7 @@ const ListProductsQueryZodSchema = z
 export const ProductValidation = {
 	CreateProductZodSchema,
 	UpdateProductZodSchema,
+	ProductFormZodSchema,
 	ProductIdZodSchema,
 	ListProductsQueryZodSchema,
 };
