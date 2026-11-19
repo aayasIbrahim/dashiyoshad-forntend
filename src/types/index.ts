@@ -6,3 +6,4 @@ export * from "./sidebar.types";
 export * from "./stats.type";
 export * from "./product.type";
 export * from "./order.type";
+export * from "./admin-notification.type";

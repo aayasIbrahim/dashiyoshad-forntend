@@ -1,10 +1,11 @@
 "use client";
 
-import { Store } from "lucide-react";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 
 import { Separator } from "@/components/ui/separator";
+import { NotificationBell } from "@/components/modules/notifications/notification-bell";
+import { AdminAccountMenu } from "./admin-account-menu";
 import {
   SidebarInset,
   SidebarProvider,
@@ -50,10 +51,9 @@ export default function DashboardShell({
               </p>
             </div>
           </div>
-          <div className="flex shrink-0 items-center gap-2 rounded-full border border-border/70 bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground shadow-sm">
-            <Store aria-hidden="true" className="size-3.5 text-primary" />
-            <span className="hidden sm:inline">Store admin</span>
-            <span className="sm:hidden">Admin</span>
+          <div className="flex shrink-0 items-center gap-2">
+            <NotificationBell />
+            <AdminAccountMenu />
           </div>
         </header>
         {children}

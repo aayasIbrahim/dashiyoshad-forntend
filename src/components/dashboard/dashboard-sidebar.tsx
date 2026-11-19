@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/sidebar";
 import { adminRoutes } from "@/routes";
 import type { SidebarItems, UserRole } from "@/types";
+import { AdminLogoutButton } from "./admin-logout-button";
 
 const sidebarRoutes: Partial<Record<UserRole, SidebarItems>> = {
   SUPER_ADMIN: adminRoutes,
@@ -116,6 +117,7 @@ export function DashboardSidebar({ role }: { role: UserRole }) {
             </span>
           </span>
         </div>
+        <AdminLogoutButton />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

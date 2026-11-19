@@ -1,5 +1,9 @@
 import apiClient from "@/lib/apiClient";
-import { LoginPayload, RegistrationPayload } from "@/types";
+import type {
+  ICurrentUserResponse,
+  LoginPayload,
+  RegistrationPayload,
+} from "@/types";
 
 
 export function userLogin(payload: LoginPayload) {
@@ -12,6 +16,6 @@ export function userLogout() {
   return apiClient("/auth/logout", { method: "POST" });
 }
 export function getMe() {
-  return apiClient("/auth/me");
+  return apiClient<ICurrentUserResponse>("/auth/me");
 }
 
