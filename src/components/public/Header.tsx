@@ -1,41 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Heart, Menu, ShoppingBag, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SearchBar from "@/components/public/SearchBar";
+import { useAppSelector } from "@/store/hooks";
+import { selectCartCount, selectWishlistCount } from "@/store/selectors";
 
 export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
-  const [wishlistCount, setWishlistCount] = useState(0);
-  const [cartCount, setCartCount] = useState(0);
+  const wishlistCount = useAppSelector(selectWishlistCount);
+  const cartCount = useAppSelector(selectCartCount);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const syncCounts = () => {
-      const wishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      setWishlistCount(Array.isArray(wishlist) ? wishlist.length : 0);
-      setCartCount(
-        Array.isArray(cart)
-          ? cart.reduce((total, item) => total + Number(item.quantity || 1), 0)
-          : 0,
-      );
-    };
-    syncCounts();
-    window.addEventListener("storage", syncCounts);
-    window.addEventListener("wishlist-updated", syncCounts);
-    window.addEventListener("cart-updated", syncCounts);
-    return () => {
-      window.removeEventListener("storage", syncCounts);
-      window.removeEventListener("wishlist-updated", syncCounts);
-      window.removeEventListener("cart-updated", syncCounts);
-    };
-  }, []);
 
   const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

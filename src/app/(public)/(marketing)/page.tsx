@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Heart, Search } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -11,19 +11,18 @@ import HeroSection from "@/components/public/HeroSection";
 import ProductCard from "@/components/public/ProductCard";
 import { useGetCategories } from "@/hooks/category.hook";
 import { useGetProducts } from "@/hooks/product.hook";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { addToCart as addCartItem } from "@/store/cart-slice";
+import { selectWishlistIds } from "@/store/selectors";
+import { toggleWishlistItem } from "@/store/wishlist-slice";
 import type { IProduct } from "@/types";
 
 export default function HomePage() {
   const searchParams = useSearchParams();
   const search = searchParams.get("search") ?? "";
+  const dispatch = useAppDispatch();
+  const wishlist = useAppSelector(selectWishlistIds);
   const [categoryId, setCategoryId] = useState("");
-  const [wishlist, setWishlist] = useState<string[]>([]);
-  const [cart, setCart] = useState<{ id: string; quantity: number }[]>([]);
-
-  useEffect(() => {
-    setWishlist(JSON.parse(localStorage.getItem("wishlist") || "[]"));
-    setCart(JSON.parse(localStorage.getItem("cart") || "[]"));
-  }, []);
 
   const { data: categoryResponse } = useGetCategories({ page: 1, limit: 100 });
   const categories = categoryResponse?.success ? categoryResponse.data : [];
@@ -41,22 +40,11 @@ export default function HomePage() {
   );
 
   const toggleWishlist = (product: IProduct) => {
-    const next = wishlist.includes(product.id)
-      ? wishlist.filter((id) => id !== product.id)
-      : [...wishlist, product.id];
-    setWishlist(next);
-    localStorage.setItem("wishlist", JSON.stringify(next));
-    window.dispatchEvent(new Event("wishlist-updated"));
+    dispatch(toggleWishlistItem(product.id));
   };
 
   const addToCart = (product: IProduct) => {
-    const existing = cart.find((item) => item.id === product.id);
-    const next = existing
-      ? cart.map((item) => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item)
-      : [...cart, { id: product.id, quantity: 1 }];
-    setCart(next);
-    localStorage.setItem("cart", JSON.stringify(next));
-    window.dispatchEvent(new Event("cart-updated"));
+    dispatch(addCartItem(product.id));
   };
 
   return (
