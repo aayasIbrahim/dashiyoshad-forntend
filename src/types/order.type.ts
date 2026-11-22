@@ -2,6 +2,19 @@ import type { ApiResponse } from "./api.type";
 import type { OrderStatus } from "./stats.type";
 
 export type OrderPaymentMethod = "CASH_ON_DELIVERY" | "BKASH";
+export interface ICreateOrderInput {
+  customerName: string;
+  customerPhone: string;
+  shippingAddress: string;
+  country?: string;
+  orderNotes?: string;
+  paymentMethod?: OrderPaymentMethod;
+  items: Array<{
+    productId: string;
+    quantity: number;
+  }>;
+}
+
 export type UpdatableOrderStatus =
   | "PENDING"
   | "PROCESSING"

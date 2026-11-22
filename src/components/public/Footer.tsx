@@ -27,7 +27,6 @@ export default function Footer() {
           <div className="mt-4 flex flex-col gap-3 text-sm text-muted-foreground">
             <Link href="/" className="hover:text-primary">Home</Link>
             <Link href="/?view=products" className="hover:text-primary">Shop</Link>
-            <Link href="/?view=wishlist" className="hover:text-primary">Wishlist</Link>
             <Link href="/login" className="hover:text-primary">My account</Link>
           </div>
         </div>

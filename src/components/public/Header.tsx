@@ -5,17 +5,19 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Heart, Menu, ShoppingBag, UserRound, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import CartSheet from "@/components/public/CartSheet";
 import SearchBar from "@/components/public/SearchBar";
+import WishlistSheet from "@/components/public/WishlistSheet";
 import { useAppSelector } from "@/store/hooks";
-import { selectCartCount, selectWishlistCount } from "@/store/selectors";
+import { selectWishlistCount } from "@/store/selectors";
 
 export default function Header() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const wishlistCount = useAppSelector(selectWishlistCount);
-  const cartCount = useAppSelector(selectCartCount);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [wishlistOpen, setWishlistOpen] = useState(false);
 
   const submitSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -33,7 +35,7 @@ export default function Header() {
             <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
               <ShoppingBag className="size-5" aria-hidden="true" />
             </span>
-            <span className="text-lg font-bold tracking-tight">Dashi<span className="text-primary">Yoshad</span></span>
+            <span className="hidden text-sm font-bold tracking-tight min-[360px]:inline sm:text-lg">Dashi<span className="text-primary">Yoshad</span></span>
           </Link>
 
           <nav className="ml-6 hidden items-center gap-6 text-sm font-medium lg:flex">
@@ -50,7 +52,15 @@ export default function Header() {
           />
 
           <div className="ml-auto flex items-center gap-1 md:ml-2">
-            <Button variant="ghost" size="icon" className="relative rounded-full" aria-label="Wishlist">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="relative shrink-0 rounded-full"
+              aria-label={`Open wishlist, ${wishlistCount} items`}
+              aria-haspopup="dialog"
+              aria-expanded={wishlistOpen}
+              onClick={() => setWishlistOpen(true)}
+            >
               <Heart className="size-5" aria-hidden="true" />
               {wishlistCount > 0 && (
                 <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
@@ -58,15 +68,8 @@ export default function Header() {
                 </span>
               )}
             </Button>
-            <Button variant="ghost" size="icon" className="relative hidden rounded-full sm:inline-flex" aria-label="Shopping cart">
-              <ShoppingBag className="size-5" aria-hidden="true" />
-              {cartCount > 0 && (
-                <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
-                  {cartCount}
-                </span>
-              )}
-            </Button>
-            <Link href="/login" className="hidden sm:block">
+            <CartSheet />
+            <Link href="/login" className="shrink-0">
               <Button variant="ghost" size="icon" className="rounded-full" aria-label="Account">
                 <UserRound className="size-5" aria-hidden="true" />
               </Button>
@@ -95,10 +98,31 @@ export default function Header() {
               <Link href="/" className="rounded-lg px-3 py-2 hover:bg-muted">Home</Link>
               <Link href="/?view=products" className="rounded-lg px-3 py-2 hover:bg-muted">Shop</Link>
               <Link href="/?category=featured" className="rounded-lg px-3 py-2 hover:bg-muted">Categories</Link>
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-muted"
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setWishlistOpen(true);
+                }}
+              >
+                <Heart aria-hidden="true" className="size-4" />
+                Wishlist{wishlistCount > 0 ? ` (${wishlistCount})` : ""}
+              </button>
+              <Link
+                href="/login"
+                className="flex items-center gap-2 rounded-lg px-3 py-2 hover:bg-muted"
+                onClick={() => setMenuOpen(false)}
+              >
+                <UserRound aria-hidden="true" className="size-4" />
+                Log in
+              </Link>
             </div>
           </nav>
         )}
       </div>
+      <WishlistSheet open={wishlistOpen} onOpenChange={setWishlistOpen} />
     </header>
   );
 }

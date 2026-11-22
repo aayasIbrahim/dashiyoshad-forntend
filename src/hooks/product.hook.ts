@@ -10,14 +10,23 @@ import type {
   IListProductsQuery,
   IUpdateProductInput,
 } from "@/types";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueries,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 export const productQueryKey = ["products"] as const;
 
-export function useGetProducts(params: IListProductsQuery = {}) {
+export function useGetProducts(
+  params: IListProductsQuery = {},
+  enabled = true,
+) {
   return useQuery({
     queryKey: [...productQueryKey, params],
     queryFn: () => getProducts(params),
+    enabled,
   });
 }
 
@@ -26,6 +35,16 @@ export function useGetProductById(id: string) {
     queryKey: [...productQueryKey, "detail", id],
     queryFn: () => getProductById(id),
     enabled: Boolean(id),
+  });
+}
+
+export function useGetProductsByIds(ids: string[], enabled = true) {
+  return useQueries({
+    queries: ids.map((id) => ({
+      queryKey: [...productQueryKey, "detail", id],
+      queryFn: () => getProductById(id),
+      enabled,
+    })),
   });
 }
 

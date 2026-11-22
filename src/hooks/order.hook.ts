@@ -1,10 +1,12 @@
 import {
+  createOrder,
   getOrderById,
   getOrders,
   updateOrderShippingFee,
   updateOrderStatus,
 } from "@/api";
 import type {
+  ICreateOrderInput,
   IListOrdersQuery,
   IUpdateOrderStatusInput,
   IUpdateShippingFeeInput,
@@ -12,6 +14,15 @@ import type {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const orderQueryKey = ["orders"] as const;
+
+export function useCreateOrder() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (payload: ICreateOrderInput) => createOrder(payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: orderQueryKey }),
+  });
+}
 
 export function useGetOrders(params: IListOrdersQuery = {}) {
   return useQuery({

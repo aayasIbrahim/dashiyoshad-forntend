@@ -1,6 +1,7 @@
 "use client";
 
 import { Heart, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import type { IProduct } from "@/types";
@@ -24,15 +25,25 @@ export default function ProductCard({
     <Card className="group gap-0 overflow-hidden rounded-2xl py-0 shadow-sm transition-shadow hover:shadow-lg">
       <div className="relative aspect-square overflow-hidden bg-muted/50">
         {image ? (
-          <img
-            src={image}
-            alt={product.name}
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          />
+          <Link
+            href={`/products/${product.id}`}
+            aria-label={`View ${product.name}`}
+            className="block size-full"
+          >
+            <img
+              src={image}
+              alt={product.name}
+              className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
+            />
+          </Link>
         ) : (
-          <div className="flex size-full items-center justify-center text-muted-foreground">
+          <Link
+            href={`/products/${product.id}`}
+            aria-label={`View ${product.name}`}
+            className="flex size-full items-center justify-center text-muted-foreground"
+          >
             <ShoppingBag className="size-14 stroke-1" />
-          </div>
+          </Link>
         )}
         {product.stock <= 0 && (
           <span className="absolute left-3 top-3 rounded-full bg-foreground px-2.5 py-1 text-xs font-semibold text-background">
@@ -54,7 +65,14 @@ export default function ProductCard({
         </Button>
       </div>
       <div className="p-3 sm:p-4">
-        <h3 className="truncate font-semibold">{product.name}</h3>
+        <h3 className="truncate font-semibold">
+          <Link
+            href={`/products/${product.id}`}
+            className="transition-colors hover:text-primary"
+          >
+            {product.name}
+          </Link>
+        </h3>
         {product.description && (
           <p className="mt-1 line-clamp-2 min-h-10 text-xs leading-5 text-muted-foreground">
             {product.description}

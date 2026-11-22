@@ -1,11 +1,19 @@
 import apiClient from "@/lib/apiClient";
 import type {
+  ICreateOrderInput,
   IListOrdersQuery,
   IUpdateOrderStatusInput,
   IUpdateShippingFeeInput,
   OrderListResponse,
   OrderSingleResponse,
 } from "@/types";
+
+export function createOrder(payload: ICreateOrderInput) {
+  return apiClient<OrderSingleResponse>("/orders", {
+    method: "POST",
+    body: payload,
+  });
+}
 
 export function getOrders(params: IListOrdersQuery = {}) {
   return apiClient<OrderListResponse>("/orders", { query: params });

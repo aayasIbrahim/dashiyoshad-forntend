@@ -39,8 +39,8 @@ export function LoginForm({
 
   const form = useForm({
     defaultValues: {
-      email: "user1@gmail.com",
-      password: "SecurePassword123!",
+      email: "",
+      password: "",
     },
     validators: {
       onSubmit: UserValidation.LoginZodSchema,
@@ -70,7 +70,7 @@ export function LoginForm({
   return (
     <div
       className={cn(
-        "grid w-full overflow-hidden rounded-3xl border border-border/70 bg-card shadow-xl shadow-primary/5 md:grid-cols-[1fr_0.92fr]",
+        "grid w-full overflow-hidden rounded-2xl border border-border/70 bg-card shadow-xl shadow-primary/5 md:rounded-3xl md:grid-cols-[1fr_0.92fr]",
         className,
       )}
       {...props}
@@ -113,20 +113,31 @@ export function LoginForm({
         </p>
       </aside>
 
-      <section className="flex items-center justify-center p-6 sm:p-10 lg:p-12">
+      <section className="flex items-center justify-center p-5 sm:p-10 lg:p-12">
         <div className="w-full max-w-md">
-          <div className="mb-8 md:hidden">
-            <span className="mb-5 flex size-11 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <ShoppingBag aria-hidden="true" className="size-5" />
-            </span>
-            <p className="text-sm font-semibold text-primary">Your Store</p>
+          <div className="mb-6 flex items-center justify-between md:hidden">
+            <Link
+              href="/"
+              className="flex items-center gap-2 rounded-lg text-sm font-semibold text-primary"
+            >
+              <span className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+                <ShoppingBag aria-hidden="true" className="size-5" />
+              </span>
+              Your Store
+            </Link>
+            <Link
+              href="/"
+              className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-primary hover:underline"
+            >
+              Back to shop
+            </Link>
           </div>
 
           <header className="mb-8">
             <p className="mb-2 text-sm font-medium text-primary">
               Welcome back
             </p>
-            <h2 className="text-3xl font-semibold tracking-tight">
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
               Sign in to your account
             </h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
