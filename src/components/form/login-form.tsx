@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "@tanstack/react-form";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   ArrowRight,
   Eye,
@@ -15,6 +16,7 @@ import {
 import { cn } from "cn";
 import Link from "next/link";
 
+import { getMe } from "@/api";
 import { useLogin } from "@/hooks";
 
 import { Button } from "@/components/ui/button";
@@ -35,25 +37,56 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { mutate: login, isPending } = useLogin();
 
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: "user1@gmail.com",
+      password: "SecurePassword123!",
     },
     validators: {
       onSubmit: UserValidation.LoginZodSchema,
     },
     onSubmit: ({ value }) => {
       login(value, {
-        onSuccess: () => {
+        onSuccess: async (response) => {
+          let role = response?.data?.role;
+
+          if (role) {
+            queryClient.setQueryData(["user"], {
+              success: true,
+              statusCode: 200,
+              message: "Current user",
+              data: response.data,
+            });
+          }
+
+          if (!role) {
+            try {
+              await queryClient.invalidateQueries({ queryKey: ["user"] });
+              const currentUser = await queryClient.fetchQuery({
+                queryKey: ["user"],
+                queryFn: getMe,
+              });
+              role = currentUser.data.role;
+            } catch {
+              // Keep the role unavailable and redirect the customer below.
+            }
+          }
+
           toast.add({
             title: "Login successful",
             description: "Welcome back. Happy shopping!",
             type: "success",
           });
-          router.push("/");
+
+          if (role === "SUPER_ADMIN" || role === "ADMIN" || role === "STAFF") {
+            router.replace("/admin");
+          } else {
+            router.replace("/");
+          }
+          router.refresh();
         },
         onError: (err) => {
           toast.add({

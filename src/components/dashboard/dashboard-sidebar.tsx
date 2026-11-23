@@ -37,6 +37,7 @@ import { AdminLogoutButton } from "./admin-logout-button";
 const sidebarRoutes: Partial<Record<UserRole, SidebarItems>> = {
   SUPER_ADMIN: adminRoutes,
   ADMIN: adminRoutes,
+  STAFF: adminRoutes,
 };
 
 const menuIcons: Record<string, LucideIcon> = {

@@ -10,6 +10,13 @@ export interface LoginPayload {
   password: string;
 }
 
+export interface LoginResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: import("./user.types").IUser;
+}
+
 export interface VerifyAccountPayload {
   email: string;
   otp: string;
