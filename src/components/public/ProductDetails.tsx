@@ -1,8 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, Heart, Package, ShoppingBag } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  ArrowLeft,
+  Check,
+  Heart,
+  Minus,
+  Package,
+  Plus,
+  ShoppingBag,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import ProductCard from "@/components/public/ProductCard";
@@ -11,8 +20,8 @@ import ProductGridSkeleton from "@/components/public/ProductGridSkeleton";
 import { toast } from "@/components/ui/toast";
 import { useGetProducts, useGetProductById } from "@/hooks/product.hook";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { addToCart } from "@/store/cart-slice";
-import { selectWishlistIds } from "@/store/selectors";
+import { addToCart, addToCartWithQuantity } from "@/store/cart-slice";
+import { selectCartItems, selectWishlistIds } from "@/store/selectors";
 import { toggleWishlistItem } from "@/store/wishlist-slice";
 import type { IProduct } from "@/types";
 
@@ -24,11 +33,26 @@ const formatPrice = (price: number) =>
   }).format(price);
 
 export default function ProductDetails({ id }: { id: string }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
+  const cartItems = useAppSelector(selectCartItems);
   const wishlist = useAppSelector(selectWishlistIds);
   const [selectedImage, setSelectedImage] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const { data: productResponse, isPending, error } = useGetProductById(id);
   const product = productResponse?.success ? productResponse.data : undefined;
+  const cartQuantity =
+    cartItems.find((item) => item.id === product?.id)?.quantity ?? 0;
+  const maxQuantity = Math.min(
+    100,
+    Math.max(0, (product?.stock ?? 0) - cartQuantity),
+  );
+
+  useEffect(() => {
+    setQuantity(1);
+    setSelectedImage(0);
+  }, [id]);
+
   const {
     data: relatedResponse,
     isPending: relatedPending,
@@ -87,18 +111,33 @@ export default function ProductDetails({ id }: { id: string }) {
         )
         .slice(0, 4)
     : [];
+  const selectedQuantity = Math.min(quantity, Math.max(1, maxQuantity));
 
   const addProductToCart = () => {
-    dispatch(addToCart(product.id));
+    dispatch(
+      addToCartWithQuantity({ id: product.id, quantity: selectedQuantity }),
+    );
     toast.add({
       title: "Added to cart",
-      description: product.name,
+      description:
+        selectedQuantity > 1
+          ? `${product.name} × ${selectedQuantity}`
+          : product.name,
       type: "success",
     });
   };
 
   const toggleWishlist = (relatedProduct: IProduct) => {
     dispatch(toggleWishlistItem(relatedProduct.id));
+  };
+
+  const addRelatedProductToCart = (relatedProduct: IProduct) => {
+    dispatch(addToCart(relatedProduct.id));
+    toast.add({
+      title: "Added to cart",
+      description: relatedProduct.name,
+      type: "success",
+    });
   };
 
   return (
@@ -199,18 +238,62 @@ export default function ProductDetails({ id }: { id: string }) {
             )}
           </div>
 
-          <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
+          <div className="mt-8 grid w-full grid-cols-[auto_minmax(0,1fr)] gap-3">
+            <div
+              role="group"
+              className="flex h-12 items-center gap-1 rounded-xl border p-1"
+              aria-label="Product quantity"
+            >
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-lg"
+                className="size-10 rounded-lg"
+                aria-label={`Decrease ${product.name} quantity`}
+                disabled={selectedQuantity <= 1}
+                onClick={() =>
+                  setQuantity((current) => Math.max(1, current - 1))
+                }
+              >
+                <Minus aria-hidden="true" />
+              </Button>
+              <span
+                className="min-w-8 text-center text-sm font-semibold tabular-nums"
+                aria-live="polite"
+                aria-label={`Quantity ${selectedQuantity}`}
+              >
+                {selectedQuantity}
+              </span>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-lg"
+                className="size-10 rounded-lg"
+                aria-label={`Increase ${product.name} quantity`}
+                disabled={maxQuantity <= 0 || selectedQuantity >= maxQuantity}
+                onClick={() =>
+                  setQuantity((current) =>
+                    Math.min(maxQuantity, current + 1),
+                  )
+                }
+              >
+                <Plus aria-hidden="true" />
+              </Button>
+            </div>
             <Button
-              className="h-12 rounded-xl text-sm sm:min-w-56 sm:flex-1"
-              disabled={product.stock <= 0}
+              className="h-12 w-full min-w-0 rounded-xl text-sm"
+              disabled={maxQuantity <= 0}
               onClick={addProductToCart}
             >
               <ShoppingBag aria-hidden="true" />
-              Add to cart
+              <span className="truncate">
+                Add to cart
+                {selectedQuantity > 1 ? ` (${selectedQuantity})` : ""}
+              </span>
             </Button>
             <Button
               variant="outline"
-              className="h-12 rounded-xl text-sm sm:flex-1"
+              className="col-span-2 h-12 w-full rounded-xl text-sm"
               aria-pressed={wishlist.includes(product.id)}
               onClick={() => dispatch(toggleWishlistItem(product.id))}
             >
@@ -264,7 +347,11 @@ export default function ProductDetails({ id }: { id: string }) {
                 product={relatedProduct}
                 wished={wishlist.includes(relatedProduct.id)}
                 onToggleWishlist={toggleWishlist}
-                onAddToCart={(item) => dispatch(addToCart(item.id))}
+                onAddToCart={addRelatedProductToCart}
+                onBuyNow={(item) => {
+                  dispatch(addToCart(item.id));
+                  router.push("/checkout");
+                }}
               />
             ))}
           </div>

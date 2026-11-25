@@ -26,7 +26,7 @@ export default function Footer() {
           <h2 className="font-semibold">Quick links</h2>
           <div className="mt-4 flex flex-col gap-3 text-sm text-muted-foreground">
             <Link href="/" className="hover:text-primary">Home</Link>
-            <Link href="/?view=products" className="hover:text-primary">Shop</Link>
+            <Link href="/#products" className="hover:text-primary">Shop</Link>
             <Link href="/login" className="hover:text-primary">My account</Link>
           </div>
         </div>

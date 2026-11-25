@@ -40,8 +40,8 @@ export default function Header() {
 
           <nav className="ml-6 hidden items-center gap-6 text-sm font-medium lg:flex">
             <Link href="/" className="transition-colors hover:text-primary">Home</Link>
-            <Link href="/?view=products" className="transition-colors hover:text-primary">Shop</Link>
-            <Link href="/?category=featured" className="transition-colors hover:text-primary">Categories</Link>
+            <Link href="/#products" className="transition-colors hover:text-primary">Shop</Link>
+            <Link href="/#categories" className="transition-colors hover:text-primary">Categories</Link>
           </nav>
 
           <SearchBar
@@ -96,8 +96,20 @@ export default function Header() {
             />
             <div className="flex flex-col gap-1 text-sm font-medium">
               <Link href="/" className="rounded-lg px-3 py-2 hover:bg-muted">Home</Link>
-              <Link href="/?view=products" className="rounded-lg px-3 py-2 hover:bg-muted">Shop</Link>
-              <Link href="/?category=featured" className="rounded-lg px-3 py-2 hover:bg-muted">Categories</Link>
+              <Link
+                href="/#products"
+                className="rounded-lg px-3 py-2 hover:bg-muted"
+                onClick={() => setMenuOpen(false)}
+              >
+                Shop
+              </Link>
+              <Link
+                href="/#categories"
+                className="rounded-lg px-3 py-2 hover:bg-muted"
+                onClick={() => setMenuOpen(false)}
+              >
+                Categories
+              </Link>
               <button
                 type="button"
                 className="flex items-center gap-2 rounded-lg px-3 py-2 text-left hover:bg-muted"

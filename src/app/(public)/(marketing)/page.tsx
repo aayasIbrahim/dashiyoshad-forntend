@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { Heart, Search } from "lucide-react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/toast";
 import ProductEmptyState from "@/components/public/ProductEmptyState";
 import ProductErrorState from "@/components/public/ProductErrorState";
 import ProductGridSkeleton from "@/components/public/ProductGridSkeleton";
@@ -18,6 +19,7 @@ import { toggleWishlistItem } from "@/store/wishlist-slice";
 import type { IProduct } from "@/types";
 
 export default function HomePage() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const search = searchParams.get("search") ?? "";
   const dispatch = useAppDispatch();
@@ -45,14 +47,24 @@ export default function HomePage() {
 
   const addToCart = (product: IProduct) => {
     dispatch(addCartItem(product.id));
+    toast.add({
+      title: "Added to cart",
+      description: product.name,
+      type: "success",
+    });
+  };
+
+  const buyNow = (product: IProduct) => {
+    dispatch(addCartItem(product.id));
+    router.push("/checkout");
   };
 
   return (
     <div className="bg-background">
       <HeroSection />
 
-      <main id="products" className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
+      <main id="products" className="scroll-mt-20 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div id="categories" className="scroll-mt-20 flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-sm font-semibold text-primary">{wishlistOnly ? "Saved items" : "Our collection"}</p>
             <h2 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
@@ -114,6 +126,7 @@ export default function HomePage() {
                 wished={wishlist.includes(product.id)}
                 onToggleWishlist={toggleWishlist}
                 onAddToCart={addToCart}
+                onBuyNow={buyNow}
               />
             ))}
           </div>
