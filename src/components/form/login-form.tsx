@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "../ui/toast";
+import { getUserFriendlyErrorMessage } from "@/lib/user-error";
 import { UserValidation } from "@/validation";
 
 export function LoginForm({
@@ -91,8 +92,10 @@ export function LoginForm({
         onError: (err) => {
           toast.add({
             title: "Unable to sign in",
-            description:
-              err.message || "Please check your details and try again.",
+            description: getUserFriendlyErrorMessage(
+              err.message,
+              "Please check your details and try again.",
+            ),
             type: "error",
           });
         },

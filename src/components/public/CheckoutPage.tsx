@@ -11,6 +11,7 @@ import { useCartProducts } from "@/hooks/cart.hook";
 import { useAppDispatch } from "@/store/hooks";
 import { clearCart } from "@/store/cart-slice";
 import { toast } from "@/components/ui/toast";
+import { getUserFriendlyErrorMessage } from "@/lib/user-error";
 import { OrderValidation } from "@/validation";
 import type { IOrder, OrderPaymentMethod } from "@/types";
 
@@ -113,7 +114,10 @@ export default function CheckoutPage() {
         if (!response.success) {
           toast.add({
             title: "Unable to place order",
-            description: response.message || "Please review your details.",
+            description: getUserFriendlyErrorMessage(
+              response.message,
+              "Please review your details and try again.",
+            ),
             type: "error",
           });
           return;
@@ -130,7 +134,7 @@ export default function CheckoutPage() {
       onError: (error) => {
         toast.add({
           title: "Unable to place order",
-          description: error.message || "Please try again.",
+          description: getUserFriendlyErrorMessage(error.message),
           type: "error",
         });
       },

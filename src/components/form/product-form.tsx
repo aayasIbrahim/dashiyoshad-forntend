@@ -20,6 +20,7 @@ import {
   useUpdateProduct,
 } from "@/hooks/product.hook";
 import type { Category, IProduct } from "@/types";
+import { getUserFriendlyErrorMessage } from "@/lib/user-error";
 import { ProductValidation } from "@/validation";
 
 interface ProductFormProps {
@@ -60,7 +61,7 @@ export function ProductForm({
     defaultValues: {
       name: product?.name ?? "",
       description: product?.description ?? "",
-      price: product?.price ?? 0,
+      price: Number(product?.price ?? 0),
       sku: product?.sku ?? "",
       stock: product?.stock ?? 0,
       weight: product?.weight ?? "",
@@ -84,7 +85,10 @@ export function ProductForm({
         }) => {
           if (!response.success) {
             toast.add({
-              title: response.message || "Unable to save product",
+              title: getUserFriendlyErrorMessage(
+                response.message,
+                "Unable to save product.",
+              ),
               type: "error",
             });
             return;
@@ -100,7 +104,7 @@ export function ProductForm({
         onError: (error: Error) => {
           toast.add({
             title: "Unable to save product",
-            description: error.message || "Please try again.",
+            description: getUserFriendlyErrorMessage(error.message),
             type: "error",
           });
         },

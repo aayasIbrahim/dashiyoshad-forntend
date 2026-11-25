@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { toast } from "../ui/toast";
+import { getUserFriendlyErrorMessage } from "@/lib/user-error";
 
 export function RegisterForm({
   className,
@@ -60,8 +61,8 @@ export function RegisterForm({
           onSuccess: (res) => {
             if (!res.success) {
               toast.add({
-                title: res.message,
-                description: res.message || "Please try again.",
+                title: "Unable to create account",
+                description: getUserFriendlyErrorMessage(res.message),
                 type: "error",
               });
               return;
@@ -75,8 +76,8 @@ export function RegisterForm({
           },
           onError: (err) => {
             toast.add({
-            title: "Authorization failure",
-              description: err.message || "Please try again.",
+              title: "Unable to create account",
+              description: getUserFriendlyErrorMessage(err.message),
               type: "error",
             });
           },

@@ -16,6 +16,7 @@ import {
   useUpdateCategory,
 } from "@/hooks/category.hook";
 import type { Category } from "@/types";
+import { getUserFriendlyErrorMessage } from "@/lib/user-error";
 import { CategoryValidation } from "@/validation";
 import { toast } from "@/components/ui/toast";
 
@@ -47,7 +48,10 @@ export function CategoryForm({
         onSuccess: async (response: { success: boolean; message: string }) => {
           if (!response.success) {
             toast.add({
-              title: response.message || "Unable to save category",
+              title: getUserFriendlyErrorMessage(
+                response.message,
+                "Unable to save category.",
+              ),
               type: "error",
             });
             return;
@@ -63,7 +67,7 @@ export function CategoryForm({
         onError: (error: Error) => {
           toast.add({
             title: "Unable to save category",
-            description: error.message || "Please try again.",
+            description: getUserFriendlyErrorMessage(error.message),
             type: "error",
           });
         },
