@@ -63,7 +63,7 @@ export default function CartSheet() {
           <Button
             variant="ghost"
             size="icon"
-            className="relative rounded-full"
+            className="relative size-8 shrink-0 rounded-full sm:size-9"
             aria-label={`Shopping cart, ${itemCount} items`}
           />
         }

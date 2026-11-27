@@ -60,7 +60,7 @@ export function CategoryTable({
                   </div>
                 </td>
                 <td className="px-5 py-4 text-muted-foreground">
-                  {category.productCount ?? "—"}
+                  {category.productCount ?? category._count?.products ?? "—"}
                 </td>
                 <td className="px-5 py-4">
                   <div className="flex justify-end gap-1">

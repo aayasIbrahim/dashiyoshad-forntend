@@ -4,6 +4,9 @@ export interface Category {
   id: string;
   name: string;
   productCount?: number;
+  _count?: {
+    products: number;
+  };
   createdAt?: string;
   updatedAt?: string;
 }
